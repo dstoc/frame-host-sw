@@ -60,6 +60,7 @@ self.addEventListener('fetch', async e => {
         const host = await getHost();
         if (!host) throw new Error('no host');
         const mc = new MessageChannel();
+        const pathname = url.pathname.substr(scopeUrl.pathname.length - 1);
         host.postMessage({get: url.pathname, port: mc.port2}, [mc.port2]);
         const result = await new Promise(resolve => {
           mc.port1.onmessage = e => {
