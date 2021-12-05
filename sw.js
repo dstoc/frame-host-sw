@@ -14,10 +14,11 @@ const headers = {
 };
 
 function contentType(url) {
-  if (url.pathname.endsWith('.html')) {
-    return 'text/html';
-  }
-  return 'text/plain';
+  const [,extension] = url.pathname.match(/\.(\w{2,4})/) || [];
+  return {
+    'html': 'text/html',
+    'js': 'text/javascript',
+  }[extension] ?? 'text/plain';
 }
 
 let hostId;
