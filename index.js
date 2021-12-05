@@ -1,1 +1,1 @@
-const sw = navigator.serviceWorker.register('/sw.js');
+const sw = navigator.serviceWorker.register('sw.js');
