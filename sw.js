@@ -18,6 +18,7 @@ function contentType(url) {
   return {
     'html': 'text/html',
     'js': 'text/javascript',
+    'css': 'text/css',
   }[extension] ?? 'text/plain';
 }
 
