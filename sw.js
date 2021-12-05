@@ -34,12 +34,16 @@ async function getHost() {
   }
 }
 
+const scopeUrl = new URL(self.registration.scope);
+const hostPath = scopeUrl.pathname + 'host.html';
+const hostScriptPath = scopeUrl.pathname + 'host.js';
+
 self.addEventListener('fetch', async e => {
   const url = new URL(e.request.url);
   if (url.origin == location.origin) {
-    if (url.pathname == '/host.html') {
+    if (url.pathname == hostPath) {
       e.respondWith((async () => {
-        return new Response(await (await fetch('/host.html')).body, {
+        return new Response(await (await fetch(hostPath)).body, {
           headers: {
             'Access-Control-Allow-Origin': '*',
           },
@@ -47,8 +51,8 @@ self.addEventListener('fetch', async e => {
       })());
       return;
     }
-    if (url.pathname == '/host.js') {
-      e.respondWith(fetch('/host.js'));
+    if (url.pathname == hostScriptPath) {
+      e.respondWith(fetch(hostScriptPath));
       return;
     }
     e.respondWith((async () => {
