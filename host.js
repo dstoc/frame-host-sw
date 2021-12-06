@@ -25,7 +25,7 @@ if (Notification.permission == 'granted') {
   });
 } else if (Notification.permission == 'default') {
   document.body.textContent = 'Click to enable.';
-  addEventListener('click', e => {
+  addEventListener('click', async e => {
     document.textContent = 'Waiting for notification permission.';
     await Notification.requestPermission();
     location.reload();
