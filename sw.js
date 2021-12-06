@@ -23,13 +23,13 @@ function contentType(url) {
 }
 
 let hostId;
-async function getHost() {
+async function getHost(uuid) {
   if (hostId) {
     const host = await clients.get(hostId);
     if (host) return host;
   }
   for (const client of await clients.matchAll()) {
-    if (client.url.endsWith('host.html')) {
+    if (client.url.endsWith(`/${uuid}/`)) {
       hostId = client.id;
       return client;
     }
@@ -46,7 +46,7 @@ async function getUuid() {
     uuid = await response.body.text();
     return uuid;
   }
-  uuid = Crypto.randomUuid();
+  uuid = crypto.randomUUID();
   await settings.put(request, new Response(uuid));
 }
 
@@ -76,7 +76,7 @@ self.addEventListener('fetch', async e => {
     }
     e.respondWith((async () => {
       try {
-        const host = await getHost();
+        const host = await getHost(uuid);
         if (!host) throw new Error(`No host, connect to ${new URL(scopeUrl, `${uuid}/`)}`);
         const mc = new MessageChannel();
         const pathname = url.pathname.substr(scopeUrl.pathname.length - 1);
