@@ -36,6 +36,20 @@ async function getHost() {
   }
 }
 
+let uuid;
+async function getUuid() {
+  if (uuid) return uuid;
+  const settings = await caches.open('settings');
+  const request = new Request('uuid');
+  const response = await settings.match(request);
+  if (response) {
+    uuid = await response.body.text();
+    return uuid;
+  }
+  uuid = Crypto.randomUuid();
+  await settings.put(request, new Response(uuid));
+}
+
 const scopeUrl = new URL(self.registration.scope);
 const hostPath = scopeUrl.pathname + 'host.html';
 const hostScriptPath = scopeUrl.pathname + 'host.js';
@@ -43,7 +57,10 @@ const hostScriptPath = scopeUrl.pathname + 'host.js';
 self.addEventListener('fetch', async e => {
   const url = new URL(e.request.url);
   if (url.origin == location.origin) {
-    if (url.pathname == hostPath) {
+    const uuid = await getUuid();
+    const hostTargetPath = `${scopeUrl.pathname}${uuid}/`;
+    const hostScriptTargetPath = `${scopeUrl.pathname}${uuid}/host.js`;
+    if (url.pathname == hostTargetPath) {
       e.respondWith((async () => {
         return new Response(await (await fetch(hostPath)).body, {
           headers: {
@@ -53,14 +70,14 @@ self.addEventListener('fetch', async e => {
       })());
       return;
     }
-    if (url.pathname == hostScriptPath) {
+    if (url.pathname == hostScriptTargetPath) {
       e.respondWith(fetch(hostScriptPath));
       return;
     }
     e.respondWith((async () => {
       try {
         const host = await getHost();
-        if (!host) throw new Error('no host');
+        if (!host) throw new Error(`No host, connect to ${new URL(scopeUrl, `${uuid}/`)}`);
         const mc = new MessageChannel();
         const pathname = url.pathname.substr(scopeUrl.pathname.length - 1);
         host.postMessage({get: pathname, port: mc.port2}, [mc.port2]);
