@@ -77,7 +77,7 @@ self.addEventListener('fetch', async e => {
     e.respondWith((async () => {
       try {
         const host = await getHost(uuid);
-        if (!host) throw new Error(`No host, connect to ${new URL(scopeUrl, `${uuid}/`)}`);
+        if (!host) throw new Error(`No host, connect to ${new URL(`${uuid}/`, scopeUrl)}`);
         const mc = new MessageChannel();
         const pathname = url.pathname.substr(scopeUrl.pathname.length - 1);
         host.postMessage({get: pathname, port: mc.port2}, [mc.port2]);
