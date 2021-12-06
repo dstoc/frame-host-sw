@@ -1,5 +1,3 @@
-const sw = await navigator.serviceWorker.register('sw.js');
-
 const requests = {};
 
 navigator.serviceWorker.addEventListener('message', async e => {
