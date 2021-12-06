@@ -43,7 +43,7 @@ async function getUuid() {
   const request = new Request('uuid');
   const response = await settings.match(request);
   if (response) {
-    uuid = await response.body.text();
+    uuid = await response.text();
     return uuid;
   }
   uuid = crypto.randomUUID();
