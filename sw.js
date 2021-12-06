@@ -59,7 +59,7 @@ self.addEventListener('fetch', async e => {
     }
     e.respondWith((async () => {
       try {
-        const host = getHost();
+        const host = await getHost();
         if (!host) throw new Error('No host');
         const mc = new MessageChannel();
         const pathname = url.pathname.substr(scopeUrl.pathname.length - 1);
