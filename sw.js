@@ -8,7 +8,7 @@ self.addEventListener('activate', async function(event) {
 });
 
 const headers = {
-  'Cross-Origin-Embedder-Policy': 'require-corp',
+  'Cross-Origin-Embedder-Policy': 'credentialless',
   'Cross-Origin-Opener-Policy': 'same-origin',
   'X-Frame-Options': 'SAMEORIGIN',
 };
